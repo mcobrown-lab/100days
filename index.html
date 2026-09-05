@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>100 Days</title>
+<meta name="theme-color" content="#141822">
+<meta name="description" content="Track your 100-day weight loss challenge: weight, meals, exercise and weekly targets.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-title">
+    <span class="brand">100 Days</span>
+    <span id="dayBadge" class="day-badge">Day –</span>
+  </div>
+  <div class="progress-rail"><div id="overallProgress" class="progress-fill" style="width:0%"></div></div>
+</header>
+
+<main id="views">
+
+  <!-- TODAY -->
+  <section id="view-today" class="view active">
+
+    <div class="card">
+      <div class="row space-between center">
+        <button id="datePrev" class="icon-btn" aria-label="Previous day">‹</button>
+        <input id="dateInput" type="date" class="date-input">
+        <button id="dateNext" class="icon-btn" aria-label="Next day">›</button>
+      </div>
+      <button id="jumpToday" class="link-btn">Jump to today</button>
+    </div>
+
+    <div class="card">
+      <h2>Weight</h2>
+      <div class="row">
+        <input id="weightInput" type="number" inputmode="decimal" step="0.1" min="0" placeholder="e.g. 82.4" class="grow">
+        <span id="weightUnitLabel" class="unit-label">kg</span>
+      </div>
+      <div id="weightDelta" class="muted small"></div>
+    </div>
+
+    <div class="card">
+      <h2>Meals</h2>
+      <div id="mealList" class="entry-list"></div>
+      <div class="add-row">
+        <input id="mealTime" type="time" class="time-input">
+        <input id="mealFood" type="text" placeholder="What did you eat?" class="grow">
+        <button id="addMeal" class="add-btn">Add</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Exercise</h2>
+      <div id="exerciseList" class="entry-list"></div>
+      <div class="add-row wrap">
+        <select id="exerciseType" class="type-select">
+          <option value="situps">Sit-ups</option>
+          <option value="pushups">Push-ups</option>
+          <option value="plank">Plank</option>
+          <option value="run">Run</option>
+          <option value="other">Other</option>
+        </select>
+        <input id="exerciseAmount" type="number" inputmode="decimal" min="0" step="any" placeholder="0" class="amount-input">
+        <span id="exerciseUnitLabel" class="unit-label">reps</span>
+        <input id="exerciseNote" type="text" placeholder="Note (optional)" class="grow hidden">
+        <button id="addExercise" class="add-btn">Add</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- HISTORY -->
+  <section id="view-history" class="view">
+    <div class="card">
+      <h2>Logged days</h2>
+      <div id="historyList" class="history-list"></div>
+      <p id="historyEmpty" class="muted small hidden">No days logged yet. Start on the Today tab.</p>
+    </div>
+  </section>
+
+  <!-- TARGETS -->
+  <section id="view-targets" class="view">
+    <div class="card">
+      <h2>Challenge setup</h2>
+      <label class="field-label">Start date</label>
+      <input id="startDateInput" type="date" class="date-input">
+      <p class="muted small">Day 1 is your start date. Changing this re-numbers all your days and weeks.</p>
+    </div>
+
+    <div class="card">
+      <h2>Units</h2>
+      <div class="row">
+        <label class="field-label grow">Weight unit</label>
+        <select id="weightUnitSelect">
+          <option value="kg">kg</option>
+          <option value="lb">lb</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Weekly targets</h2>
+      <p class="muted small">Set what you're aiming for each 7-day week of the challenge.</p>
+
+      <label class="field-label">Sit-ups (reps / week)</label>
+      <input id="targetSitups" type="number" min="0" step="1" placeholder="0">
+
+      <label class="field-label">Push-ups (reps / week)</label>
+      <input id="targetPushups" type="number" min="0" step="1" placeholder="0">
+
+      <label class="field-label">Plank (minutes / week, total)</label>
+      <input id="targetPlank" type="number" min="0" step="0.5" placeholder="0">
+
+      <label class="field-label">Running (km / week)</label>
+      <input id="targetRun" type="number" min="0" step="0.1" placeholder="0">
+    </div>
+  </section>
+
+  <!-- PROGRESS -->
+  <section id="view-progress" class="view">
+
+    <div class="card">
+      <h2>Summary</h2>
+      <div id="statGrid" class="stat-grid"></div>
+    </div>
+
+    <div class="card">
+      <h2>Weight over time</h2>
+      <canvas id="weightChart" class="chart-canvas"></canvas>
+      <p id="weightChartEmpty" class="muted small hidden">Log your weight to see a trend line here.</p>
+    </div>
+
+    <div class="card">
+      <h2>Weekly targets</h2>
+      <div id="metricTabs" class="metric-tabs">
+        <button class="metric-tab active" data-metric="situps">Sit-ups</button>
+        <button class="metric-tab" data-metric="pushups">Push-ups</button>
+        <button class="metric-tab" data-metric="plank">Plank</button>
+        <button class="metric-tab" data-metric="run">Run</button>
+      </div>
+      <canvas id="targetChart" class="chart-canvas"></canvas>
+      <p id="targetChartEmpty" class="muted small hidden">Set a weekly target and log exercise to see progress here.</p>
+    </div>
+
+  </section>
+
+</main>
+
+<nav class="tabbar">
+  <button class="tab-btn active" data-view="today">
+    <span class="tab-icon">📅</span><span>Today</span>
+  </button>
+  <button class="tab-btn" data-view="history">
+    <span class="tab-icon">📖</span><span>History</span>
+  </button>
+  <button class="tab-btn" data-view="targets">
+    <span class="tab-icon">🎯</span><span>Targets</span>
+  </button>
+  <button class="tab-btn" data-view="progress">
+    <span class="tab-icon">📈</span><span>Progress</span>
+  </button>
+</nav>
+
+<script src="js/db.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
